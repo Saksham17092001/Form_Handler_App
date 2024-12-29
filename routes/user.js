@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require("../schema/user.schema");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const verifyToken = require("../middleware/auth")
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -34,7 +35,6 @@ router.post("/register", async (req, res) => {
         res.status(500).json({ message: "Error creating user", error: err.message });
     }
 });
-
 
 router.post("/login", async (req, res) => {
     const { email, password } = req.body;
@@ -71,6 +71,48 @@ router.post("/login", async (req, res) => {
         res.status(500).json({ message: "Server error, please try again later" });
     }
 });
+
+
+router.put('/update/:id', verifyToken, async (req, res) => {
+    const { id } = req.params;  // Get the ID from the URL parameter
+    const { name, email, oldPassword, newPassword } = req.body;
+
+    try {
+        // Fetch the user by the ID passed in the route
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        // Validate the old password
+        const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
+        if (!isPasswordValid) {
+            return res.status(400).json({ success: false, message: 'Invalid old password' });
+        }
+
+        // Prepare updates
+        const updates = {};
+        if (name) updates.name = name;
+        if (email) updates.email = email;
+        if (newPassword) {
+            const salt = await bcrypt.genSalt(10);
+            updates.password = await bcrypt.hash(newPassword, salt);
+        }
+
+        // Apply updates
+        const updatedUser = await User.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
+
+        res.status(200).json({
+            success: true,
+            message: 'User updated successfully',
+            user: updatedUser,
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Error updating user', error: error.message });
+    }
+});
+
+
 
 
 

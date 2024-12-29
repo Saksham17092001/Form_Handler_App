@@ -4,6 +4,8 @@ const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const userRoute = require("./routes/user");
 const folderRoutes = require("./routes/folder")
+const formRoutes = require('./routes/form');
+
 const bodyParser = require("body-parser");
 const cors = require("cors")
 dotenv.config();
@@ -16,6 +18,7 @@ app.use(express.urlencoded({extended:true}));
 
 app.use("/api/auth", userRoute)
 app.use("/api/folder", folderRoutes)
+app.use('/api/form', formRoutes);
 
 app.listen(PORT, ()=>{
     console.log("port is running on 3000");
