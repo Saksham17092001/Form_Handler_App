@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const userRoute = require("./routes/user");
 const folderRoutes = require("./routes/folder")
 const formRoutes = require('./routes/form');
+const shareRoutes = require('./routes/share')
 
 const bodyParser = require("body-parser");
 const cors = require("cors")
@@ -16,7 +17,8 @@ app.use(bodyParser.json());
 app.use(express.urlencoded({extended:true}));
 
 
-app.use("/api/auth", userRoute)
+app.use("/api/auth", userRoute);
+app.use("/api/share",shareRoutes)
 app.use("/api/folder", folderRoutes)
 app.use('/api/form', formRoutes);
 
