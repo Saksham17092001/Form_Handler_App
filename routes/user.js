@@ -92,8 +92,12 @@ router.put('/update/:id', verifyToken, async (req, res) => {
 
         // Prepare updates
         const updates = {};
-        if (name) updates.name = name;
-        if (email) updates.email = email;
+        if (name) {
+            updates.name = name;
+        }
+        if (email) {
+            updates.email = email;
+        }
         if (newPassword) {
             const salt = await bcrypt.genSalt(10);
             updates.password = await bcrypt.hash(newPassword, salt);

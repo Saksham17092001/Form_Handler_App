@@ -1,15 +1,22 @@
 const mongoose = require('mongoose');
 
-const folderSchema = mongoose.Schema({
+const folderSchema = mongoose.Schema(
+  {
     name: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User', // Link to the User schema
-        required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
-}, { timestamps: true });
+    isSelected: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  { timestamps: true }
+);
 
-module.exports = mongoose.model('Folder', folderSchema);
+module.exports = mongoose.model("Folder", folderSchema);
